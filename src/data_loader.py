@@ -19,95 +19,48 @@ NOTE (V7 - Unholy Mix):
 import pandas as pd
 import numpy as np
 import os
-import urllib.parse
+from urllib.parse import unquote, quote
+from pathlib import Path
+import unicodedata
+import re
 
+# from env import (
+#     DATA_DIR
+#     ,GRAPH_DIR
+#     ,TEXT_DIR
+#     ,HTML_DIR
+# )
 DATA_DIR = "./data"
 GRAPH_DIR = os.path.join(DATA_DIR, "wikispeedia_paths-and-graph")
 TEXT_DIR = os.path.join(DATA_DIR, "plaintext_articles")
+HTML_DIR = os.path.join(DATA_DIR, "wikispeedia_articles_html", "wpcd")
 
-def decode_url_string(s):
-    """Helper function to decode URL-encoded strings."""
-    if isinstance(s, str):
-        return urllib.parse.unquote(s)
-    return s
 
-def load_articles_df(data_dir: str = GRAPH_DIR) -> pd.DataFrame:
+def load_wikispeedia_file(filename: str, columns=None, sep='\t', decode=True):
     """
-    Loads 'articles.csv', mapping hashed IDs to human-readable article names.
-    This file has NO header and is COMMA-separated (1 column).
+    Generic loader for Wikispeedia TSV/TXT files.
+    - Skips comment lines starting with '#'
+    - Assigns column names if provided
+    - Optionally URL-decodes text columns
     """
-    file_path = os.path.join(data_dir, "articles.tsv")
-    col_names = ['article_id']
-    try:
-        articles_df = pd.read_csv(
-            file_path,
-            sep=',',
-            header=None,
-            names=col_names,
-            comment='#'
-        )
-        articles_df['article_id'] = articles_df['article_id'].apply(decode_url_string)
-        articles_df['article_name'] = articles_df['article_id']
-        return articles_df
-    except FileNotFoundError:
-        print(f"ERROR: File not found at {file_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        print(f"ERROR loading articles.tsv: {e}")
-        return pd.DataFrame()
 
+    path = os.path.join(GRAPH_DIR, filename)
+    print("Loading:", path)
 
-def load_links_df(data_dir: str = GRAPH_DIR) -> pd.DataFrame:
-    """
-    Loads 'links.tsv', containing the graph edges (links between articles).
-    This file has NO header and is TAB-separated.
-    """
-    file_path = os.path.join(data_dir, "links.tsv")
-    col_names = ['source', 'target']
-    try:
-        links_df = pd.read_csv(
-            file_path,
-            sep='\t',
-            header=None,
-            names=col_names,
-            comment='#'
-        )
-        links_df['source'] = links_df['source'].apply(decode_url_string)
-        links_df['target'] = links_df['target'].apply(decode_url_string)
-        return links_df
-    except FileNotFoundError:
-        print(f"ERROR: File not found at {file_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        print(f"ERROR loading links.tsv: {e}")
-        return pd.DataFrame()
+    df = pd.read_csv(
+        path,
+        sep=sep,
+        comment='#',
+        names=columns,
+        header=None,
+        dtype=str,   # keep all as string to avoid numeric conversion issues
+        engine='python'
+    )
 
+    if decode:
+        df = df.applymap(lambda x: unquote(x) if isinstance(x, str) else x)
 
-def load_paths_df(data_dir: str = GRAPH_DIR) -> pd.DataFrame:
-    """
-    Loads 'paths_finished.tsv', containing completed navigation paths.
-    This file has NO header and is TAB-separated.
-    """
-    file_path = os.path.join(data_dir, "paths_finished.tsv")
-    col_names = ["session_id", "timestamp", "session_time", "path", "rating", "type"]
-
-    try:
-        paths_df = pd.read_csv(
-            file_path,
-            sep='\t',
-            header=None,
-            names=col_names,
-            comment='#'
-        )
-        paths_df['path'] = paths_df['path'].apply(decode_url_string)
-
-        return paths_df
-    except FileNotFoundError:
-        print(f"ERROR: File not found at {file_path}")
-        return pd.DataFrame()
-    except Exception as e:
-        print(f"ERROR loading paths_finished.tsv: {e}")
-        return pd.DataFrame()
+    return df
 
 
 def load_shortest_path_matrix(data_dir: str = GRAPH_DIR) -> np.ndarray:
@@ -152,19 +105,89 @@ def load_shortest_path_matrix(data_dir: str = GRAPH_DIR) -> np.ndarray:
         print(f"ERROR loading distance matrix: {e}")
         return np.array([])
 
+def get_article_text(title: str, text_dir: str = TEXT_DIR) -> str | float:
+    """
+    load content of correct .txt-file in text_dir for given article name
+    The files are fully url-encoded (utf-8), e.g.:
+      'M*A*S*H_(TV_series)' -> 'M%2AA%2AS%2AH_%28TV_series%29.txt'
+      'Áedán_mac_Gabráin' -> '%C3%81ed%C3%A1n_mac_Gabr%C3%A1in.txt'
+    returns text or np.nan, if file is not found
+    """
+    if not isinstance(title, str) or not title.strip():
+        return np.nan
 
-def get_article_text(article_name: str, text_dir: str = TEXT_DIR) -> str:
-    """
-    Loads the text content of an article based on its name.
-    """
-    file_path = os.path.join(text_dir, f"{article_name}.txt")
+    # url-encode fully
+    encoded = quote(title, encoding="utf-8", safe="")
+
+    path = Path(text_dir) / f"{encoded}.txt"
+
+    if not path.exists():
+        return np.nan
 
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return content
-    except FileNotFoundError:
-        return ""
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
     except Exception as e:
-        print(f"ERROR reading file {file_path}: {e}")
-        return ""
+        print(f"⚠️ ERROR reading file {path}: {e}")
+        return np.nan
+    
+
+def get_article_html(title: str, html_dir: str = HTML_DIR) -> str | float:
+    """
+    load html-content of a Wikipedia-file (.htm) from folder "wikispeedia_articles_html/wpcd/wp"
+    The files are fully url-encoded (utf-8), e.g.:
+        'Áedán_mac_Gabráin' -> '%C3%81ed%C3%A1n_mac_Gabr%C3%A1in.htm'
+    all subfolder will be searched by recursion
+    returns html-text or np.nan, if file is not found
+    """
+
+    html_files_dir = os.path.join(html_dir, "wp")
+    if not isinstance(title, str) or not title.strip():
+        return np.nan
+
+    # url-encode fully
+    encoded = quote(title, encoding="utf-8", safe="")
+    target_filename = f"{encoded}.htm"
+
+    # search for file recursively
+    base_path = Path(html_files_dir)
+    for path in base_path.rglob(target_filename):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception as e:
+            print(f"⚠️ ERROR reading file {path}: {e}")
+            return np.nan
+
+    # nothing found
+    return np.nan
+
+
+def find_absolute_link_position_from_df(row, articles_lookup):
+    """
+    Find the character index of the <a href> linking to the target article
+    inside the source article’s HTML (from articles_df, not from disk).
+    Handles both single and double URL encoding.
+    """
+    source = row["source"]
+    target = row["target"]
+
+    html = articles_lookup.get(source)
+    if not isinstance(html, str) or not html.strip():
+        return np.nan
+
+    # Encode target
+    encoded_target = quote(target, safe="")                 # e.g. D%C3%A1l_Riata
+    double_encoded_target = quote(encoded_target, safe="")  # e.g. D%25C3%25A1l_Riata
+
+    # Build a regex that matches <a href="...encoded_target..." OR <a href="...double_encoded_target..."
+    pattern = re.compile(
+        rf'<a\s+href="[^"]*({re.escape(encoded_target)}|{re.escape(double_encoded_target)})[^"]*"',
+        re.IGNORECASE
+    )
+
+    match = pattern.search(html)
+    if not match:
+        return np.nan
+
+    return match.start()
