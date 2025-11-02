@@ -48,3 +48,6 @@ Questions for TAs (optional): Add here any questions you have for us related to 
 	- first: train model with information a human has access to
 	- second: incorporate historical data to learn how much each factor weights (eg. how much does the similarity between current article and goal article count?)
 	- so we use historical data to weight the features of our heuristic
+
+### TODO
+Clean repo code, prepare readme, submit

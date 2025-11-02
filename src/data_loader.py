@@ -24,12 +24,6 @@ from pathlib import Path
 import unicodedata
 import re
 
-# from env import (
-#     DATA_DIR
-#     ,GRAPH_DIR
-#     ,TEXT_DIR
-#     ,HTML_DIR
-# )
 DATA_DIR = "./data"
 GRAPH_DIR = os.path.join(DATA_DIR, "wikispeedia_paths-and-graph")
 TEXT_DIR = os.path.join(DATA_DIR, "plaintext_articles")
@@ -71,7 +65,7 @@ def load_shortest_path_matrix(data_dir: str = GRAPH_DIR) -> np.ndarray:
     file_path = os.path.join(data_dir, "shortest-path-distance-matrix.txt")
     matrix_data = []
 
-    print("Loading distance matrix (fixed-width method)...")
+    print("Loading distance matrix...")
 
     try:
         with open(file_path, 'r') as f:
