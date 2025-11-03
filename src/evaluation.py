@@ -1,10 +1,3 @@
-"""
-Module for model evaluation metrics.
-
-Contains functions to calculate metrics relevant to ranking tasks,
-such as Mean Reciprocal Rank (MRR).
-"""
-
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
@@ -17,24 +10,6 @@ def calculate_mrr(
         y_val: Union[pd.Series, np.ndarray],
         query_groups: Union[pd.Series, np.ndarray]
 ) -> float:
-    """
-    Calculates the Mean Reciprocal Rank (MRR) for the given model.
-
-    This function assumes the task is formulated as ranking, where
-    for each query (a navigation step), the model scores all possible
-    candidates, and we measure the rank of the true positive candidate.
-
-    Args:
-        model: The trained scikit-learn compatible model.
-        X_val: The feature matrix for the validation set.
-        y_val: The true labels (0 or 1) for the validation set.
-        query_groups: An array or Series identifying which query each
-                      row in X_val belongs to (e.g., a path_step_id).
-
-    Returns:
-        The Mean Reciprocal Rank (MRR) score as a float.
-    """
-
     if not isinstance(y_val, np.ndarray):
         y_val = y_val.to_numpy()
 
