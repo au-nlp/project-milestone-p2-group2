@@ -7,14 +7,14 @@
 ## Abstract
 
 
-Humans do not navigate Wikipedia by calculating shortest paths; they rely on semantic intuition, contextual clues, and general knowledge. This project aims to predict the *next link* a human will click in the Wikispeedia "pathfinding" game, given a current article and an end goal. Our core motivation is to model this human navigation strategy. We will build and evaluate models that uses modern NLP embeddings (to understand *what* an article is about. Our goal is to create a model that navigates Wikipedia more like a human and less like an algorithm.
+Humans do not navigate Wikipedia by calculating shortest paths; they rely on semantic intuition, contextual clues, and general knowledge (West, Pineau, and Precup 2009). This project aims to predict the *next link* a human will click in the Wikispeedia "pathfinding" game, given a current article and an end goal. Our core motivation is to model this human navigation strategy. We will build and evaluate models that uses modern NLP embeddings (to understand *what* an article is about. Our goal is to create a model that navigates Wikipedia more like a human and less like an algorithm.
 
 
 ## Contributions
 
 
 The contribution of this project lies in developing a human-like next-link prediction model that goes beyond traditional graph or shortest-path approaches.
-Unlike prior work that relied primarily on click frequency or path length, this project integrates semantic and structural signals available to real human players, such as the article content, available hyperlinks, their visual order (link position, the goal article’s semantics and the path that has been used so far.
+Unlike prior work that relied primarily on click frequency or path length (West, Pineau, and Precup 2009), this project integrates semantic and structural signals available to real human players, such as the article content, available hyperlinks, their visual order (link position, the goal article’s semantics and the path that has been used so far.
 The model aims to more accurately approximate how humans navigate Wikipedia and provides new insights into cognitive navigation behavior and improving machine models for web navigation, education, and recommendation systems.
 
 
@@ -93,6 +93,9 @@ We will build on our PoC by implementing and comparing several models of increas
 | Week 5 & 6 | Dec 05 - Dec 19 | Buffer for potential fixes and problems
 
 
+
+## References
+West, Robert, Joelle Pineau, and Doina Precup. 2009. Wikispeedia: An Online Game for Inferring Semantic Distances between Concepts. In Proceedings of the 21st International Joint Conference on Artificial Intelligence (IJCAI), 1598–1603.
 
 
 ## Appendix
