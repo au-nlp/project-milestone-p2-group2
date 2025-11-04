@@ -101,7 +101,7 @@ We will build on our PoC by implementing and comparing several models of increas
 ### Repository Organisation
 Here is the overview of the repository structure:
 
-
+```
 project-milestone-p2-group2/
 ├── data/
 │ ├── plaintext_articles/
@@ -117,6 +117,7 @@ project-milestone-p2-group2/
 ├── .gitignore
 ├── main.ipynb
 └── README.md
+```
 
 
 Directory data contains the whole provided dataset of Wikispeedia.
@@ -127,10 +128,3 @@ src/ directory contains all the Python source code, organized as a module.
 
 
 main.ipynb Is the main Jupyter Notebook where the complete analysis, model training, and evaluation pipeline is executed and documented. This is the primary file for presenting our findings.
-
-
-### Note on P2 Milestone Creation
-
-
-We used GenAI tools to assist in the creation of helper functions for the `src` modules and to structure the `main.ipynb` file.
-
