@@ -21,7 +21,7 @@ The model aims to more accurately approximate how humans navigate Wikipedia and 
 ## Used dataset
 
 
-For P2 Milestone we already used all kinds of data that the proposed Wikispeedia dataset provides. Combining different types was useful to create strong model predictions since those are based on multiple sources (multiple data types that the dataset offers). We didn’t add anything extra, because we think that that data should be enough to create a strong model. The model will make use of the plaintext of the articles and the html files have been used to extract a new feature which is the position of a link in a given article. The data about the finished paths will be used to test our approach.
+For P2 Milestone we already used all kinds of data that the proposed Wikispeedia dataset provides (West, Pineau, and Precup 2009). Combining different types was useful to create strong model predictions since those are based on multiple sources (multiple data types that the dataset offers). We didn’t add anything extra, because we think that that data should be enough to create a strong model. The model will make use of the plaintext of the articles and the html files have been used to extract a new feature which is the position of a link in a given article. The data about the finished paths will be used to test our approach.
 
 
 ## Data preprocessing
@@ -96,7 +96,7 @@ We will build on our PoC by implementing and comparing several models of increas
 
 ## References
 West, Robert, Joelle Pineau, and Doina Precup. 2009. Wikispeedia: An Online Game for Inferring Semantic Distances between Concepts. In Proceedings of the 21st International Joint Conference on Artificial Intelligence (IJCAI), 1598–1603.
-
+https://snap.stanford.edu/data/wikispeedia.html
 
 ## Appendix
 
