@@ -38,8 +38,6 @@ We also loaded the shortest paths matrix, the categories file and the unfinished
 We proceeded by linking the plaintext and html text to the articles dataframe and added two additional columns for the length of the plaintext and the html text. We also added two columns to describe how many articles are linking to a given article (indegree) and to how many articles a given article is linking (outdegree). In the links dataframe we added a column describing the relative position of a link in an article. 0 means the link is positioned at the beginning of the article, while 1 means it is positioned at the end of the article. Values in between indicate if the link appears earlier or later in the article.
 
 
-
-
 ## Methods
 
 
@@ -66,14 +64,14 @@ We will build on our PoC by implementing and comparing several models of increas
 
 1.  **Baseline (Semantic-Only)**
    * We will calculate a score for every candidate link based purely on its semantic similarity to the goal:
-   * $score(candidate) = cos\_sim(emb(candidate), emb(goal))$
+   * $score(candidate) = cos\\_sim(emb(candidate), emb(goal))$
    * We will choose the candidate with the highest score. This tests the "people choose articles semantically closer to the goal" hypothesis.
 2.  **Heuristic Model (Semantic + Hubs)**
    * This model incorporates the "hub bias" (e.g., players look for broad articles like "Science" or "History" at the start).
-   * $score(candidate) = \alpha \cdot cos\_sim(candidate, goal) + (1-\alpha) \cdot (outdegree(candidate) / max\_outdegree)$
+   * $score(candidate) = \alpha \cdot cos\\_sim(candidate, goal) + (1-\alpha) \cdot (outdegree(candidate) / max\\_outdegree)$
    * The weighting parameter $\alpha$ can be dynamic:
       * **Early in game:** More weight on `outdegree` (to find hubs).
-      * **Later in game:** More weight on `cos\_sim` (to "zoom in" on the target).
+      * **Later in game:** More weight on `cos_sim` (to "zoom in" on the target).
 3.  **Trained Model (Graph Neural Network)**
    * This is our final proposed architecture. We will replace the Logistic Regression model with a Graph Neural Network (e.g., GraphSAGE) using PyTorch Geometric.
    * **Node Features:** The pre-computed SBERT embeddings from our PoC.
@@ -91,7 +89,6 @@ We will build on our PoC by implementing and comparing several models of increas
 | Week 1 & 2 | Nov 7 - Nov 23 | Receive and evaluate P2 Feedback and implement Baseline and Heuristic models. Establish final evaluation script. 
 | Week 3 & 4 | Nov 24 - Dec 05 | Implement the GNN model. Run final experiments, compare all models (PoC, Baseline, Heuristic, GNN). Generate plots and results.
 | Week 5 & 6 | Dec 05 - Dec 19 | Buffer for potential fixes and problems
-
 
 
 ## References
