@@ -11,7 +11,8 @@ Unlike prior work that relied primarily on click frequency or path length (West,
 The model aims to more accurately approximate how humans navigate Wikipedia and provide new insights into cognitive navigation behaviour and improving machine models for web navigation, education and recommendation systems.
 
 ## Used dataset
-For P2 Milestone we already used all kinds of data that the Wikispeedia dataset provides. Combining different types was useful to create strong model predictions since those are based on multiple sources (multiple data types that the dataset offers). We didn’t add anything extra, because we think that that data should be enough to create a strong model. The model will make use of the plaintext of the articles and the html files have been used to extract a new feature which is the position of a link in a given article. The data about the finished paths will be used to test our approach.
+We use the original Wikispeedia dataset provided by West, Pineau, and Precup (2009), which contains human navigation paths, hyperlink structure and article text from Wikipedia.
+No additional external data sources were introduced and all analyses and models are based solely on this dataset.
 
 ## Data preprocessing
 For the preprocessing we first loaded the .tsv-files from the wikispeedia_paths-and-graph folder, which includes the following data:
