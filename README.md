@@ -56,7 +56,7 @@ We will expand our PoC by implementing and comparing several models of increasin
 ## Proposed Timeline
 
 | Week       | Dates           | Task(s)                                                                                                                         |
-| : | :-- | : |
+| :-- | :-- | :-- |
 | Week 1 & 2 | Nov 7 - Nov 23  | Receive and evaluate P2 Feedback and implement Baseline and Heuristic models. Establish final evaluation script.                |
 | Week 3 & 4 | Nov 24 - Dec 05 | Implement the GNN model. Run final experiments, compare all models (PoC, Baseline, Heuristic, GNN). Generate plots and results. |
 | Week 5 & 6 | Dec 05 - Dec 19 | Buffer for potential fixes and problems                                                                                         |
