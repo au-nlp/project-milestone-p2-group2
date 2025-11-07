@@ -20,8 +20,8 @@ For the preprocessing we first loaded the .tsv-files from the wikispeedia_paths-
 - Links: Dataset containing the outgoing links of a certain article
 - Paths finished: Dataset containing Wikispeedia games where a route between start and goal article has been found by a human. All used articles to reach the goal are listed. In addition a rating about difficulty and the required time is provided.
 - Paths unfinished: Dataset containing Wikispeedia games where a route between start and goal article could not be found. All used articles until quitting the game are provided. Additionally we have information about the reason of quitting the game (restart or timeout)
-
-We also loaded the shortest paths matrix and the categories .tsv-file. We will not be using this data because a human will not have access to the category and the shortest paths to other articles.
+- Categories: Dataset containing information about the category and subcategories an article belongs to
+- Shortest path matrix: Matrix about shortest paths between articles
 
 We proceeded by linking the plaintext and html text to the articles dataframe and added two additional columns for the length of the plaintext and the html text. We also added two columns to describe how many articles are linking to a given article (indegree) and to how many articles a given article is linking (outdegree). In the links dataframe we added a column describing the relative position of a link in an article. The value will lie between 0 and 1. A value closer to 0 indicates that link is positioned closer to the beginning, while 1 indicates the link is positioned closer to the end of the article. 
 
