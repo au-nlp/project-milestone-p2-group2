@@ -54,6 +54,7 @@ We will expand our PoC by implementing and comparing several models of increasin
 1.  **Final Model:** Our final contribution (for P3) will be a Graph Neural Network (GNN) architecture that learns the optimal, non-linear balance between these semantic and structural features.
 
 ## Proposed Timeline
+
 | Week       | Dates           | Task(s)                                                                                                                         |
 | : | :-- | : |
 | Week 1 & 2 | Nov 7 - Nov 23  | Receive and evaluate P2 Feedback and implement Baseline and Heuristic models. Establish final evaluation script.                |
@@ -68,22 +69,7 @@ West, Robert, Joelle Pineau, and Doina Precup. 2009. Wikispeedia: An Online Game
 ### Repository Organisation
 Here is the overview of the repository structure:
 
-project-milestone-p2-group2/
-├── data/
-│ ├── plaintext_articles/
-│ ├── wikispeedia_articles_html/
-│ └── wikispeedia_paths-and-graph/
-│
-├── src/
-│ ├── **init**.py
-│ ├── data_loader.py
-│ ├── evaluation.py
-│ └── feature_extractor.py
-│
-├── .gitignore
-├── main.ipynb
-└── README.md
-
+<img width="309" height="395" alt="image" src="https://github.com/user-attachments/assets/1e643581-6f8e-4076-a65c-2e43a95fd989" />
 
 - Directory data contains the whole provided dataset of Wikispeedia.
 - The HTML are only kept locally because they are too big.
