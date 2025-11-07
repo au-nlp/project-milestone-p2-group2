@@ -51,7 +51,7 @@ We will expand our PoC by implementing and comparing several models of increasin
    * This is our final proposed architecture. We will replace the Logistic Regression model with a Graph Neural Network (e.g., GraphSAGE) using PyTorch Geometric.
    * **Node Features:** The pre-computed SBERT embeddings from our PoC.
    * **Task:** The GNN will learn to combine graph structure and node semantics to predict the edge (link) a user will take, given the context of the source and goal nodes. This model will be trained end-to-end on the historical data from `paths_finished`.
-1.  **Final Model:** Our final contribution (for P3) will be a Graph Neural Network (GNN) architecture that learns the optimal, non-linear balance between these semantic and structural features.
+4.  **Final Model:** Our final contribution (for P3) will be a Graph Neural Network (GNN) architecture that learns the optimal, non-linear balance between these semantic and structural features.
 
 ## Proposed Timeline
 
