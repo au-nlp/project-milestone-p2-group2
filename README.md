@@ -130,4 +130,7 @@ src/ directory contains all the Python source code, organized as a module.
 main.ipynb Is the main Jupyter Notebook where the complete analysis, model training, and evaluation pipeline is executed and documented. This is the primary file for presenting our findings.
 
 
-### TODO UPDATE README WITH CONTRIBUTIONS
+### TODO
+- Update readme with contributions
+- Report should contain table with comparison between (logistic regression / heuristic / GNN)
+- Add error analysis with every plot to the report
