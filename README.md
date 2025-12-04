@@ -131,6 +131,7 @@ main.ipynb Is the main Jupyter Notebook where the complete analysis, model train
 
 
 ### TODO
-- Update readme with contributions
+- Update readme with contributions and repo organisation
 - Report should contain table with comparison between (logistic regression / heuristic / GNN)
 - Add error analysis with every plot to the report
+- Attention mechanism used in Gatv2
