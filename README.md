@@ -1,94 +1,68 @@
 # Human-Like Next-Link Prediction
 
-
 **Team:** Szymon, Jendrik, Patrik
-
 
 ## Abstract
 
-
-Humans do not navigate Wikipedia by calculating shortest paths; they rely on semantic intuition, contextual clues, and general knowledge (West, Pineau, and Precup 2009). This project aims to predict the *next link* a human will click in the Wikispeedia "pathfinding" game, given a current article and an end goal. Our core motivation is to model this human navigation strategy. We will build and evaluate models that uses modern NLP embeddings (to understand *what* an article is about. Our goal is to create a model that navigates Wikipedia more like a human and less like an algorithm.
-
+Humans do not navigate Wikipedia by calculating shortest paths; they rely on semantic intuition, contextual clues, visual layout, and general knowledge (West, Pineau, and Precup 2009). This project aims to predict the *next link* a human will click in the Wikispeedia "pathfinding" game, given a current article and an end goal. Our core motivation is to model this human navigation strategy using a hybrid approach. We combine modern NLP embeddings (SBERT) to understand *what* an article is about with graph-structural awareness (Graph Neural Networks) to understand *where* it is. Our final model achieves a Mean Reciprocal Rank (MRR) of **0.49**, demonstrating that blending semantic deep learning with explicit distance heuristics significantly outperforms purely rule-based baselines.
 
 ## Contributions
 
-
 The contribution of this project lies in developing a human-like next-link prediction model that goes beyond traditional graph or shortest-path approaches.
-Unlike prior work that relied primarily on click frequency or path length (West, Pineau, and Precup 2009), this project integrates semantic and structural signals available to real human players, such as the article content, available hyperlinks, their visual order (link position, the goal article’s semantics and the path that has been used so far.
-The model aims to more accurately approximate how humans navigate Wikipedia and provides new insights into cognitive navigation behavior and improving machine models for web navigation, education, and recommendation systems.
+Unlike prior work that relied primarily on click frequency or path length, this project integrates diverse signals:
+1.  **Visual Bias:** We parse HTML to extract the vertical position of links, validating the hypothesis that users favor links appearing earlier in the text.
+2.  **Hybrid Architecture:** We introduce a Hybrid GNN (Graph Attention Network) that fuses learned node embeddings with explicitly injected shortest-path distances.
+3.  **Comparative Analysis:** We provide a rigorous benchmark of heuristics, linear models, and deep graph networks, showing that deep learning can effectively approximate human intuition when augmented with structural priors.
 
+## Dataset
 
-## Used dataset
+We use the Wikispeedia dataset (West, Pineau, and Precup 2009), available at [SNAP](https://snap.stanford.edu/data/wikispeedia.html). The dataset contains:
+* **Articles:** 4,604 plaintext and HTML files.
+* **Links:** Network structure (~120k links).
+* **Paths:** Over 50,000 finished human navigation paths.
 
-
-For P2 Milestone we already used all kinds of data that the proposed Wikispeedia dataset provides (West, Pineau, and Precup 2009). Combining different types was useful to create strong model predictions since those are based on multiple sources (multiple data types that the dataset offers). We didn’t add anything extra, because we think that that data should be enough to create a strong model. The model will make use of the plaintext of the articles and the html files have been used to extract a new feature which is the position of a link in a given article. The data about the finished paths will be used to test our approach.
-
-
-## Data preprocessing
-For the preprocessing we first loaded the .tsv-files from the wikispeedia_paths-and-graph folder. So we loaded the following data:
-- Articles: Dataset containing name of each article
-- Links: Dataset containing the outgoing links of a certain article
-- Paths finished: Dataset containing Wikispeedia games where a route between start and goal article has been found by a human. All used articles to reach the goal are listed. In addition a rating about difficulty is provided.
-- Paths unfinished: Dataset containing Wikispeedia games where a route between start and goal article could not be found. All used articles until quitting the game are provided. Additionally we have information about the reason of quitting the game (restart or timeout)
-
-
-We also loaded the shortest paths matrix, the categories file and the unfinished paths set but we will not use this data. A human will not have access to the category and the shortest paths to other articles.
-
-
-We proceeded by linking the plaintext and html text to the articles dataframe and added two additional columns for the length of the plaintext and the html text. We also added two columns to describe how many articles are linking to a given article (indegree) and to how many articles a given article is linking (outdegree). In the links dataframe we added a column describing the relative position of a link in an article. 0 means the link is positioned at the beginning of the article, while 1 means it is positioned at the end of the article. Values in between indicate if the link appears earlier or later in the article.
-
+### Preprocessing
+1.  **Text:** We embedded article content using `sentence-transformers` (all-MiniLM-L6-v2).
+2.  **Graph:** We computed PageRank, Out-Degree, and All-Pairs Shortest Paths (BFS).
+3.  **Visuals:** We parsed ~4,600 HTML files to extract the normalized `link_position` (0.0 = top, 1.0 = bottom) for every link in the graph.
 
 ## Methods
 
+We formulated the problem as a ranking task: given a current article $s$ and a target $g$, rank all neighbors $c \in \mathcal{N}(s)$ by the probability of being clicked.
 
-### What we managed to achieve in P2
+### 1. Logistic Regression (PoC)
+A supervised linear model trained on a rich feature set:
+* **Semantic:** Cosine similarity (SBERT).
+* **Structural:** PageRank, Out-Degree, Shortest-Path Distance.
+* **Visual:** HTML Link Position.
+* **Result:** MRR $\approx 0.47$. This strong baseline highlights the predictive power of manually engineered features.
 
+### 2. Heuristic Model
+A baseline combining semantic similarity and hub-seeking behavior.
+$$\text{Score}(c) = \alpha \cdot \cos(\mathbf{v}_c, \mathbf{v}_g) + (1 - \alpha) \cdot \frac{\text{deg}(c)}{\max(\text{deg})}$$
+This model tests the assumption that users simply click "semantically close" or "popular" links.
 
-To validate our project's feasibility, we built a complete data pipeline in `main.ipynb`.
+### 3. Hybrid Graph Neural Networks (Final Model)
+To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** using PyTorch Geometric.
+* **Hybrid Injection:** Standard GNNs struggle to learn global graph distances. We solved this by injecting the scalar `shortest_path_distance` directly into the final prediction layer, alongside the GNN-learned node embeddings.
+* **Result:** The **Hybrid GATv2** achieved the best performance (MRR $\approx 0.49$), effectively learning to balance visual, semantic, and structural cues.
 
+## Results
 
-1.  **Task Formulation:** We treat the problem as a ranking task. For each step in a human's path (e.g., from article `A` to `B`, with goal `G`), the model must rank all available links on page `A`. The link `B` is the positive sample, and all other links are negative samples.
-2.  **Feature Engineering:** We generated a feature vector for each candidate link based on:
-   * **Semantic Features:** `sim_source_candidate` (cosine similarity of `A` and `B`), `sim_candidate_goal` (similarity of `B` and `G`).
-   * **Shortest Path Features:** `dist_candidate_goal` (distance from `B` to `G`), `is_closer` (does `B` move closer to `G` than `A`?).
-   * **Topology Features:** `pagerank` (centrality of `B`), `out_degree` (hub status of `B`).
-3.  **Model:** A `LogisticRegression` model with `class_weight='balanced'` to handle the fact that only ~3% of links are positive samples.
-4.  **Evaluation:** We use **Mean Reciprocal Rank (MRR)**. Our model achieved an **MRR of 0.4556**, demonstrating that, on average, the correct human-clicked link is ranked very highly by our simple model.
+| Model | Validation MRR |
+| :--- | :--- |
+| Heuristic (Semantic + Hubs) | 0.1776 |
+| Logistic Regression (PoC) | 0.4736 |
+| Hybrid GraphSAGE | 0.4816 |
+| **Hybrid GATv2** | **0.4910** |
 
+## Member Contributions
 
-### What are the plans for P3
+* **Szymon:** Data processing pipeline, initial GNN approaches and improvements
+* **Jendrik:** Data processing pipeline, heuristic implementation 
+* **Patrik:** Improvement of GNN models
 
-
-We will build on our PoC by implementing and comparing several models of increasing complexity.
-
-
-1.  **Baseline (Semantic-Only)**
-   * We will calculate a score for every candidate link based purely on its semantic similarity to the goal:
-   * $score(candidate) = cos\\_sim(emb(candidate), emb(goal))$
-   * We will choose the candidate with the highest score. This tests the "people choose articles semantically closer to the goal" hypothesis.
-2.  **Heuristic Model (Semantic + Hubs)**
-   * This model incorporates the "hub bias" (e.g., players look for broad articles like "Science" or "History" at the start).
-   * $score(candidate) = \alpha \cdot cos\\_sim(candidate, goal) + (1-\alpha) \cdot (outdegree(candidate) / max\\_outdegree)$
-   * The weighting parameter $\alpha$ can be dynamic:
-      * **Early in game:** More weight on `outdegree` (to find hubs).
-      * **Later in game:** More weight on `cos_sim` (to "zoom in" on the target).
-3.  **Trained Model (Graph Neural Network)**
-   * This is our final proposed architecture. We will replace the Logistic Regression model with a Graph Neural Network (e.g., GraphSAGE) using PyTorch Geometric.
-   * **Node Features:** The pre-computed SBERT embeddings from our PoC.
-   * **Task:** The GNN will learn to combine graph structure and node semantics to predict the edge (link) a user will take, given the context of the source and goal nodes. This model will be trained end-to-end on the historical data from `paths_finished`.
-
-
-4.  **Final Model:** Our final contribution (for P3) will be a Graph Neural Network (GNN) architecture that learns the optimal, non-linear balance between these semantic and structural features.
-
-
-## Proposed Timeline
-
-
-| Week | Dates | Task(s) |
-| :--- | :--- | :--- |
-| Week 1 & 2 | Nov 7 - Nov 23 | Receive and evaluate P2 Feedback and implement Baseline and Heuristic models. Establish final evaluation script. 
-| Week 3 & 4 | Nov 24 - Dec 05 | Implement the GNN model. Run final experiments, compare all models (PoC, Baseline, Heuristic, GNN). Generate plots and results.
-| Week 5 & 6 | Dec 05 - Dec 19 | Buffer for potential fixes and problems
+## Repository Organisation
 
 
 ## References
@@ -108,15 +82,25 @@ project-milestone-p2-group2/
 │ ├── wikispeedia_articles_html/
 │ └── wikispeedia_paths-and-graph/
 │
+├── results/ (images with plots and data inside each directory)
+│ ├── gnn_p3/
+│ ├── heuristic_p3/
+│ └── html_p3/
+│ └── logistic regression_p2/
+│
 ├── src/
 │ ├── **init**.py
 │ ├── data_loader.py
 │ ├── evaluation.py
 │ └── feature_extractor.py
+│ └── gnn_model.py
+│ └── gnn_utils.py
+│ └── heuristic.py
+│ └── html_processor.py
 │
 ├── .gitignore
 ├── main.ipynb
-└── README.md
+└── README.md (this file)
 ```
 
 
@@ -128,10 +112,3 @@ src/ directory contains all the Python source code, organized as a module.
 
 
 main.ipynb Is the main Jupyter Notebook where the complete analysis, model training, and evaluation pipeline is executed and documented. This is the primary file for presenting our findings.
-
-
-### TODO
-- Update readme with contributions and repo organisation
-- Report should contain table with comparison between (logistic regression / heuristic / GNN)
-- Add error analysis with every plot to the report
-- Attention mechanism used in Gatv2
