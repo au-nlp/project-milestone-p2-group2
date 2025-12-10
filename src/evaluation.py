@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.base import BaseEstimator
 from typing import Union
 
-
 def calculate_mrr(
         model: BaseEstimator,
         X_val: Union[pd.DataFrame, np.ndarray],
@@ -16,7 +15,10 @@ def calculate_mrr(
     if not isinstance(query_groups, np.ndarray):
         query_groups = query_groups.to_numpy()
 
-    scores = model.predict_proba(X_val)[:, 1]
+    if hasattr(model, "predict_proba"):
+        scores = model.predict_proba(X_val)[:, 1]
+    else:
+        scores = model.predict(X_val)
 
     df = pd.DataFrame({
         'query_id': query_groups,
@@ -26,14 +28,16 @@ def calculate_mrr(
 
     reciprocal_ranks = []
 
-    for query_id, group in df.groupby('query_id'):
-        group_sorted = group.sort_values('score', ascending=False).reset_index()
-
-        try:
-            rank = group_sorted[group_sorted['y_true'] == 1].index[0] + 1
-            reciprocal_ranks.append(1 / rank)
-        except IndexError:
+    for _, group in df.groupby('query_id'):
+        group_sorted = group.sort_values('score', ascending=False).reset_index(drop=True)
+        
+        # Find index of first positive sample
+        true_indices = group_sorted.index[group_sorted['y_true'] == 1].tolist()
+        
+        if true_indices:
+            rank = true_indices[0] + 1
+            reciprocal_ranks.append(1.0 / rank)
+        else:
             reciprocal_ranks.append(0.0)
 
-    mrr = np.mean(reciprocal_ranks)
-    return float(mrr)
+    return float(np.mean(reciprocal_ranks))
