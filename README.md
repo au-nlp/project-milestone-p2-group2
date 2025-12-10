@@ -45,16 +45,16 @@ This model tests the assumption that users simply click "semantically close" or 
 ### 3. Hybrid Graph Neural Networks (Final Model)
 To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** using PyTorch Geometric.
 * **Hybrid Injection:** Standard GNNs struggle to learn global graph distances. We solved this by injecting the scalar `shortest_path_distance` directly into the final prediction layer, alongside the GNN-learned node embeddings.
-* **Result:** The **Hybrid GATv2** achieved the best performance (MRR $\approx 0.49$), effectively learning to balance visual, semantic, and structural cues.
+* **Result:** The **Hybrid GraphSAGE** achieved the best performance (MRR $\approx 0.512$), effectively learning to balance visual, semantic, and structural cues.
 
 ## Results
 
 | Model | Validation MRR |
-| :--- | :--- |
-| Heuristic (Semantic + Hubs) | 0.1776 |
-| Logistic Regression (PoC) | 0.4736 |
-| Hybrid GraphSAGE | 0.4816 |
-| **Hybrid GATv2** | **0.4910** |
+| :--- |:---------------|
+| Heuristic (Semantic + Hubs) | 0.1776         |
+| Logistic Regression (PoC) | 0.4736         |
+| Hybrid GATv2 | 0.4910         |
+| **Hybrid GraphSAGE** | **0.5117**     |
 
 ## Member Contributions
 
