@@ -51,7 +51,7 @@ def expand_paths_to_steps(paths_df):
     return pd.DataFrame(rows)
 
 
-def compute_heuristic(article_id, goal_article_id, embedding_map, articles_df, links_map, alpha=0.5):
+def compute_heuristic(article_id, goal_article_id, embedding_map, articles_df, max_outdegree, alpha=0.5):
     """
     Compute the heuristic between an article and the goal article.
     
@@ -59,7 +59,7 @@ def compute_heuristic(article_id, goal_article_id, embedding_map, articles_df, l
     :param goal_article_id: The goal article we are trying to reach.
     :param embedding_map: Dictionary mapping article IDs to their embeddings.
     :param articles_df: DataFrame containing article metadata (like outdegree).
-    :param links_map: Dictionary mapping article IDs to the list of linked articles.
+    :param max_outdegree: Maximal outdegree of all potential candidate links
     :param alpha: Weight parameter between 0 and 1.
     
     :return: The computed heuristic value.
@@ -73,10 +73,6 @@ def compute_heuristic(article_id, goal_article_id, embedding_map, articles_df, l
     
     # Get the outdegree of the article
     outdegree_article = articles_df.loc[articles_df['article_id'] == article_id, 'outdegree'].values[0]
-    
-    # Get the maximum outdegree from the articles linked by the current article
-    linked_articles = links_map.get(article_id, [])
-    max_outdegree = max(articles_df.loc[articles_df['article_id'].isin(linked_articles), 'outdegree'], default=1)
     
     # Calculate the heuristic
     heuristic_value = alpha * cosine_sim + (1 - alpha) * (outdegree_article / max_outdegree)
@@ -102,10 +98,13 @@ def compute_mrr_next_link(current_article_id, goal_article_id, next_article_id, 
     # Get the linked articles for the current article from links_map
     linked_articles = links_map.get(current_article_id, [])
     
+    # Calculate max outdegree among the linked articles
+    max_outdegree = max(articles_df.loc[articles_df['article_id'].isin(linked_articles), 'outdegree'], default=1)
+
     # Compute heuristic (cosine similarity and outdegree) for each linked article to the goal article
     heuristic_scores = []
     for linked_article in linked_articles:
-        score = compute_heuristic(linked_article, goal_article_id, embedding_map, articles_df, links_map, alpha)
+        score = compute_heuristic(linked_article, goal_article_id, embedding_map, articles_df, max_outdegree, alpha)
         heuristic_scores.append((linked_article, score))
 
     # Sort linked articles by heuristic (descending order)
