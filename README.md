@@ -56,10 +56,10 @@ To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** u
 
 | Model | Validation MRR |
 | :--- |:---------------|
-| Heuristic (Semantic + Hubs) | 0.1776         |
-| Logistic Regression (PoC) | 0.4736         |
-| Hybrid GATv2 | 0.4910         |
-| **Hybrid GraphSAGE** | **0.5117**     |
+| Heuristic (Semantic + Hubs) | 0.174         |
+| Logistic Regression (PoC) | 0.474         |
+| Hybrid GATv2 | 0.491         |
+| **Hybrid GraphSAGE** | **0.512**     |
 
 ## Member Contributions
 
