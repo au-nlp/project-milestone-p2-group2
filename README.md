@@ -64,15 +64,17 @@ To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** u
 * **Jendrik:** Data processing pipeline, heuristic implementation 
 * **Patrik:** Improvement of GNN models
 
-## Repository Organisation
-
 
 ## References
-West, Robert, Joelle Pineau, and Doina Precup. 2009. Wikispeedia: An Online Game for Inferring Semantic Distances between Concepts. In Proceedings of the 21st International Joint Conference on Artificial Intelligence (IJCAI), 1598–1603.
-https://snap.stanford.edu/data/wikispeedia.html
+Peter Abdel Massih, Antoine Bergerault, Timothée Callens, Gabriel Jiménez, and Frédéric
+Khayat. The wikipseedia game: Are we playing it all wrong? exploring human navigation
+patterns within wikipedia’s knowledge network. Applied Data Analysis Project (EPFL), project
+website, 2024. Accessed: 2025-12-19.
+
+Robert West, Joelle Pineau, and Doina Precup. Wikispeedia: An online game for inferring
+semantic distances between concepts. pages 1598–1603, 01 2009.
 
 ## Appendix
-
 
 ### Repository Organisation
 Here is the overview of the repository structure:
@@ -102,6 +104,7 @@ project-milestone-p2-group2/
 │
 ├── .gitignore
 ├── main.ipynb
+├── report.pdf
 └── README.md (this file)
 ```
 
