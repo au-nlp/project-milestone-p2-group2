@@ -1,3 +1,5 @@
+**Hint: The final version is on the main branch**
+
 # Human-Like Next-Link Prediction
 
 **Team:** Szymon Zalewski, Jendrik Engels, Patrik Kolozsvári
