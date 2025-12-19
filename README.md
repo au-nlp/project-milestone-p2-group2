@@ -1,6 +1,7 @@
 # Human-Like Next-Link Prediction
 
 **Team:** Szymon, Jendrik, Patrik
+**Final Code avaialable on the `main` branch**
 
 ## Abstract
 
