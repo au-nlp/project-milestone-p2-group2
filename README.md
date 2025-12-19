@@ -45,6 +45,7 @@ A supervised linear model trained on a rich feature set:
 A baseline combining semantic similarity and hub-seeking behavior.
 $$\text{Score}(c) = \alpha \cdot \cos(\mathbf{v}_c, \mathbf{v}_g) + (1 - \alpha) \cdot \frac{\text{deg}(c)}{\max(\text{deg})}$$
 This model tests the assumption that users simply click "semantically close" or "popular" links.
+It only achieves an MRR score of $\approx 0.174$.
 
 ### 3. Hybrid Graph Neural Networks (Final Model)
 To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** using PyTorch Geometric.
