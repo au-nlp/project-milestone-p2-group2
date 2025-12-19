@@ -65,6 +65,7 @@ To capture non-linear dependencies, we implemented **GraphSAGE** and **GATv2** u
 * **Szymon:** Data processing pipeline, initial GNN approaches and improvements
 * **Jendrik:** Data processing pipeline, heuristic implementation 
 * **Patrik:** Improvement of GNN models
+* The report was written together as a team
 
 
 ## References
