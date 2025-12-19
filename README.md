@@ -5,7 +5,21 @@
 **Team:** Szymon Zalewski, Jendrik Engels, Patrik Kolozsvári
 
 ## Abstract
-Humans do not navigate Wikipedia by calculating shortest paths, they rely on semantic intuition, contextual clues, and general knowledge. This project aims to predict the next link a human will click in the Wikispeedia "pathfinding" game, given a current article and an end goal. Our core motivation is to model this human navigation strategy. We will build and evaluate models that uses modern NLP embeddings (to understand what an article is about. Our goal is to create a model that navigates Wikipedia more like a human and less like an algorithm.
+Humans navigating Wikipedia do not strictly follow shortest paths; they rely on
+semantic intuition, visual cues, and structural context. This project aims to model
+this human navigation strategy by predicting the next link a player will click in the
+Wikispeedia game. We propose a hybrid architecture that combines semantic under-
+standing (via Sentence-BERT (SBERT) embeddings) with structural awareness (via
+Graph Neural Networks). We introduce a novel feature extraction pipeline that in-
+cludes visual link positioning parsed from raw HTML. Our experiments benchmark
+a semantic heuristic, a feature-based Logistic Regression, and two GNN variants
+(GraphSAGE and GATv2). We demonstrate that a Hybrid GraphSAGE, which
+fuses learned node embeddings with explicit shortest-path distances, achieves the
+highest Mean Reciprocal Rank (MRR) of approximately 0.512, outperforming
+traditional baselines and demonstrating the efficacy of combining neural represen-
+tation learning with classical graph heuristics. The Hybrid GATv2 achieves an
+MRR of 0.491, Logistic Regression achieves 0.474, and the heuristic performs the
+worst, only achieving an MRR of 0.174
 
 ## Contributions
 The contribution of this project lies in developing a human-like next-link prediction model that goes beyond traditional graph or shortest-path approaches.
