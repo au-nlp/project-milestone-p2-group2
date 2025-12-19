@@ -1,3 +1,5 @@
+**Hint: The final version is on this branch (main)**
+
 # Human-Like Next-Link Prediction
 
 **Team:** Szymon, Jendrik, Patrik
