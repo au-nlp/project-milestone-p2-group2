@@ -1,3 +1,5 @@
+**Hint: The final version is on the main branch**
+
 ### Human-Like Next-Link Prediction - Group 2
 ### TODO
 Readme.md file containing the detailed project proposal (up to 1000 words). Your README.md should contain:
