@@ -87,17 +87,17 @@ project-milestone-p2-group2/
 ├── results/ (images with plots and data inside each directory)
 │ ├── gnn_p3/
 │ ├── heuristic_p3/
-│ └── html_p3/
+│ ├── html_p3/
 │ └── logistic regression_p2/
 │
 ├── src/
-│ ├── **init**.py
+│ ├── __init__.py
 │ ├── data_loader.py
 │ ├── evaluation.py
-│ └── feature_extractor.py
-│ └── gnn_model.py
-│ └── gnn_utils.py
-│ └── heuristic.py
+│ ├── feature_extractor.py
+│ ├── gnn_model.py
+│ ├── gnn_utils.py
+│ ├── heuristic.py
 │ └── html_processor.py
 │
 ├── .gitignore
